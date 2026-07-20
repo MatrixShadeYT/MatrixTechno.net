@@ -4,7 +4,6 @@ import * as Utils from './Utils.js';
 ctx.imageSmoothingEnabled = false;
 canvas.height = 720;
 canvas.width = 1280;
-
 Utils.resizeCanvas({canvas});
 
 import { Object } from './Object.js';
