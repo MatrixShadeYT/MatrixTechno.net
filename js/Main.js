@@ -1,6 +1,6 @@
-import * as Utils from './Utils.js';
 export const canvas = document.querySelector('canvas');
 export const ctx = canvas.getContext('2d');
+import * as Utils from './Utils.js';
 ctx.imageSmoothingEnabled = false;
 canvas.height = 720;
 canvas.width = 1280;
@@ -19,9 +19,7 @@ class Game {
         for (const key in Utils.keys) if (Utils.keys[key].released) Utils.keys[key].released = false;
     }
 }
-export const game = new Game({
-    "tileSize": 32
-});
+export const game = new Game({});
 
 let lastTime;
 import './EventListeners.js';
