@@ -103,6 +103,20 @@
             console.log('Log "./js/EventListeners.js"');
         }
     }
+    class Game {
+        static update({ deltaTime }) {}
+        static drawFrame({ctx}) {}
+        static render({ ctx, deltaTime }) {
+            Game.update({ deltaTime });
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            Game.drawFrame({ ctx });
+            for (const key in EventListeners.keys) {
+              if (EventListeners.keys[key].released) {
+                EventListeners.keys[key].released = false;
+              }
+            }
+        }
+    }
     class Object {
         constructor({ height, width, position, velocity, hitbox, color }) {
             this.height = height ?? 1;
@@ -119,21 +133,6 @@
         drawFrame({ ctx }) {
             ctx.fillStyle = `${this.color}`;
             ctx.fillRect(this.position.x,this.position.y,this.width,this.height);
-        }
-    }
-    class Game {
-        constructor({}) {}
-        static update({ deltaTime }) {}
-        static drawFrame({ctx}) {}
-        static render({ ctx, deltaTime }) {
-            Game.update({ deltaTime });
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            Game.drawFrame({ ctx });
-            for (const key in EventListeners.keys) {
-              if (EventListeners.keys[key].released) {
-                EventListeners.keys[key].released = false;
-              }
-            }
         }
     }
     class Main {
