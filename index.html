@@ -129,7 +129,11 @@
             Game.update({ deltaTime });
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             Game.drawFrame({ ctx });
-            for (const key in EventListeners.keys) if (EventListeners.keys[key].released) EventListeners.keys[key].released = false;
+            for (const key in EventListeners.keys) {
+              if (EventListeners.keys[key].released) {
+                EventListeners.keys[key].released = false;
+              }
+            }
         }
     }
     class Main {
