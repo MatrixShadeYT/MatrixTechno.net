@@ -6,8 +6,154 @@
     <meta name="author" content="MatrixShadeYT">
     <meta name="description" content="Landing page for Matrix Techno">
     <title>GAME - Matrix Techno</title>
-    <link rel="stylesheet" href="./css/Main.css">
-    <script src="./js/Main.js" type="module" defer></script>
+    <style>
+      html, body {
+        background-color: #040008;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+      }
+      canvas {
+          transform: translate(-50%, -50%);
+          image-rendering: crisp-edges;
+          image-rendering: pixelated;
+          background-color: black;
+          aspect-ratio: 16/9;
+          position: absolute;
+          display: block;
+          left: 50%;
+          top: 50%;
+      }
+    </style>
+    <script defer>
+      class Utils {
+        static mousePosition = { x: 0, y: 0 }
+        static resizeCanvas({ canvas }) {
+            let ratioCanvas = 1;
+            let widthCanvas = window.innerWidth * ratioCanvas;
+            let heightCanvas = widthCanvas * (9 / 16);
+            if (heightCanvas > window.innerHeight * ratioCanvas) {
+                heightCanvas = window.innerHeight * ratioCanvas
+                widthCanvas = heightCanvas * (16 / 9);
+            }
+            canvas.style.height = `${heightCanvas}px`;
+            canvas.style.width = `${widthCanvas}px`;
+        }
+        static collision([obj1,obj2]) {
+            return (
+                obj1.position.x < obj2.position.x + obj2.width &&
+                obj1.position.x + obj1.width > obj2.position.x &&
+                obj1.position.y < obj2.position.y + obj2.height &&
+                obj1.position.y + obj1.height > obj2.position.y
+            )
+        }
+    }
+    class EventListeners {
+        static resize(e) {
+            const canvas = document.querySelector("canvas");
+            Utils.resizeCanvas({ canvas })
+        }
+        static keyUp(e) {
+            const key = e.code;
+            if (Utils.keys[key]) {
+                e.preventDefault();
+                Utils.keys[key].pressed = false;
+                Utils.keys[key].released = true;
+            }
+        }
+        static keyDown(e) {
+            const key = e.code;
+            if (Utils.keys[key]) {
+                e.preventDefault();
+                Utils.keys[key].pressed = true;
+            }
+        }
+        static mouseMove(e) {
+            const canvas = document.querySelector("canvas");
+            if (!canvas) return;
+            const rect = canvas.getBoundingClientRect();
+            Utils.mousePosition.x = ((e.clientX - rect.left) / rect.width) * canvas.width;
+            Utils.mousePosition.y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+            Utils.mousePosition.x = Math.max(0, Math.min(canvas.width, Utils.mousePosition.x));
+            Utils.mousePosition.y = Math.max(0, Math.min(canvas.height, Utils.mousePosition.y));
+        }
+        static mouseDown(e) {
+            const key = EventListeners.mouseMap[e.button];
+            if (!Utils.keys[key]) return
+            if (key && Utils.keys[key]) Utils.keys[key].pressed = true;
+        }
+        static mouseUp(e) {
+            const key = EventListeners.mouseMap[e.button];
+            if (!Utils.keys[key]) return
+            if (key && Utils.keys[key]) {
+                Utils.keys[key].pressed = false;
+                Utils.keys[key].released = true;
+            }
+        }
+        static keys = Object.fromEntries([].map(key => [key, { pressed: false, released: false }]));
+        static mouseMap = ["MouseLeft", "MouseMiddle", "MouseRight"];
+        static {
+            window.addEventListener('contextmenu', (e) => e.preventDefault());
+            window.addEventListener('resize', EventListeners.resize);
+            window.addEventListener('keyup', EventListeners.keyUp);
+            window.addEventListener('keydown', EventListeners.keyDown);
+            window.addEventListener('mousemove', EventListeners.mouseMove);
+            window.addEventListener('mousedown', EventListeners.mouseDown);
+            window.addEventListener('mouseup', EventListeners.mouseUp);
+            console.log('Log "./js/EventListeners.js"');
+        }
+    }
+    class Object {
+        constructor({ height, width, position, velocity, hitbox, color }) {
+            this.height = height ?? 1;
+            this.width = width ?? 1;
+            this.position = position ?? {x:0,y:0};
+            this.velocity = velocity ?? {x:0,y:0};
+            this.hitbox = hitbox ?? {x:0,y:0,w:this.width,h:this.height};
+            this.color = color ?? "white";
+        }
+        update({ deltaTime }) {
+            this.position.x += this.velocity.x * deltaTime;
+            this.position.y += this.velocity.y * deltaTime;
+        }
+        drawFrame({ ctx }) {
+            ctx.fillStyle = `${this.color}`;
+            ctx.fillRect(this.position.x,this.position.y,this.width,this.height);
+        }
+    }
+    class Game {
+        constructor({}) {}
+        static update({ deltaTime }) {}
+        static drawFrame({ctx}) {}
+        static render({ ctx, deltaTime }) {
+            Game.update({ deltaTime });
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            Game.drawFrame({ ctx });
+            for (const key in EventListeners.keys) if (EventListeners.keys[key].released) EventListeners.keys[key].released = false;
+        }
+    }
+    class Main {
+        static lastTime;
+        static animate(timeStamp) {
+            window.requestAnimationFrame(Main.animate);
+            Main.lastTime = Main.lastTime ?? timeStamp;
+            const deltaTime = Math.min((timeStamp - Main.lastTime) / 1000, 0.1);
+            Main.lastTime = timeStamp;
+            Game.render({ ctx: Main.ctx, deltaTime });
+        }
+        static canvas;
+        static ctx;
+        static {
+            Main.canvas = document.querySelector('canvas');
+            Main.ctx = Main.canvas.getContext('2d');
+            Main.ctx.imageSmoothingEnabled = false;
+            Main.canvas.height = 720;
+            Main.canvas.width = 1280;
+            Utils.resizeCanvas({canvas: Main.canvas});
+            window.requestAnimationFrame(Main.animate);
+        }
+    }
+    </script>
   </head>
     <body>
         <canvas></canvas>
