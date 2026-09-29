@@ -1,0 +1,17 @@
+html, body {
+    background-color: #0a0d1d;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+}
+canvas {
+    transform: translate(-50%, -50%);
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    background-color: black;
+    aspect-ratio: 16/9;
+    position: absolute;
+    display: block;
+    left: 50%;
+    top: 50%;
+}
