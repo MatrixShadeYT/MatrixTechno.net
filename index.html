@@ -1,58 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="MatrixShadeYT">
-    <meta name="description" content="Landing page for Matrix Techno">
-    <title>GAME - Matrix Techno</title>
-</head>
-
-<body>
-    <canvas></canvas>
-</body>
-<style>
-    html,
-    body {
-        background-color: #6f1dc1;
-        overflow: hidden;
-        padding: 0;
-        margin: 0;
-    }
-
-    canvas {
-        transform: translate(-50%, -50%);
-        image-rendering: crisp-edges;
-        image-rendering: pixelated;
-        background-color: black;
-        aspect-ratio: 16/9;
-        position: absolute;
-        display: block;
-        left: 50%;
-        top: 50%;
-    }
-</style>
-
-<script>
-    const canvas = document.querySelector('canvas');
-    const ctx = canvas.getContext('2d');
-
-    const Game = new class {
-        constructor() { }
-        update({ deltaTime }) { }
-        render({ ctx }) { }
-    }
-
-    let lastTime = 0;
-    function animateFrames(deltaTime) {
-        const time = deltaTime - lastTime;
-        lastTime = deltaTime;
-        Game.update({ time });
-        Game.render({ ctx });
-        console.log(`FPS: ${Math.round(1000 / time)}`);
-    }
-    window.requestAnimationFrame(animateFrames);
-</script>
-
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="MatrixShadeYT">
+        <meta name="description" content="Landing page for Matrix Techno">
+        <title>GAME - Matrix Techno</title>
+        <style>
+        html, body {
+            background-color: #0a0d1d;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        canvas {
+            transform: translate(-50%, -50%);
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+            background-color: black;
+            aspect-ratio: 16/9;
+            position: absolute;
+            display: block;
+            left: 50%;
+            top: 50%;
+        }
+    </style>
+    </head>
+    <body>
+        <canvas></canvas>
+    </body>
+    <script src="./index.js"></script>
 </html>
