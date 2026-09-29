@@ -1,4 +1,4 @@
-export const scale = 3;
+export const scale = 4
 export const gravity = 0.5;
 export const playerSpeed = 7.5;
 export const collisionBuffer = 0.01;

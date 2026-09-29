@@ -5,8 +5,8 @@ import { Sprite } from './js/Sprite.js';
 import { Player } from './js/Player.js';
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
-canvas.width = 800;
-canvas.height = 450;
+canvas.width = 1024;
+canvas.height = 576;
 canvas.style.width = '90%';
 
 const background = new Sprite({
@@ -28,8 +28,40 @@ collisionMap.forEach((row, y) => {
 const player = new Player({
     collisionBlocks: floorCollisionBlocks,
     position: {
-        x: 50,
-        y: 250
+        x: 100,
+        y: 100
+    },
+    animations: {
+        Idle: {
+            imageSrc: './img/warrior/Idle.png',
+            frameBuffer: 5,
+            frameRate: 8
+        },
+        IdleLeft: {
+            imageSrc: './img/warrior/IdleLeft.png',
+            frameBuffer: 5,
+            frameRate: 8
+        },
+        Run: {
+            imageSrc: './img/warrior/Run.png',
+            frameBuffer: 5,
+            frameRate: 8
+        },
+        RunLeft: {
+            imageSrc: './img/warrior/RunLeft.png',
+            frameBuffer: 5,
+            frameRate: 8
+        },
+        Jump: {
+            imageSrc: './img/warrior/Jump.png',
+            frameBuffer: 5,
+            frameRate: 2
+        },
+        Fall: {
+            imageSrc: './img/warrior/Fall.png',
+            frameBuffer: 3,
+            frameRate: 2
+        }
     }
 });
 
@@ -55,8 +87,21 @@ function animate(deltaTime) {
     }
     if (Keys.a.pressed) {
         player.velocity.x = -player.speed;
+        player.facing = 'Right';
+        player.switchSprite({key:'RunLeft'})
     } else if (Keys.d.pressed) {
+        player.switchSprite({key:'Run'});
         player.velocity.x = player.speed;
+    } else if (player.velocity.y === 0) {
+        if (this.facing == 'Right') {
+            player.switchSprite({key:'Idle'});
+        } else {
+            player.switchSprite({key:'IdleLeft'});
+        }
+    } else if (player.velocity.y < 0) {
+        player.switchSprite({key:'Jump'})
+    } else if (player.velocity.y > 0) {
+        player.switchSprite({key:'Fall'})
     }
     for (let i in Keys) { Keys[i].released = false }
 }
