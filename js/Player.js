@@ -1,4 +1,4 @@
-import { gravity } from './Config.js';
+import { gravity } from './config.js';
 export class Player {
     constructor() {
         this.position = {
