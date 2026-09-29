@@ -1,5 +1,6 @@
 import * as config from './js/config.js';
 import { keys } from './js/Keys.js';
+import { CollisionBlock } from './js/CollisionBlock.js';
 import { Sprite } from './js/Sprite.js';
 import { Player } from './js/Player.js';
 const canvas = document.querySelector('canvas');
@@ -12,6 +13,16 @@ const background = new Sprite({
     position: { x: 0, y: 0 },
     imageSrc: './img/background.png',
 });
+
+const collisionBlocks = [];
+config.floorCollisions.forEach((row) => {
+    row.forEach((symbol) => {
+        if (symbol === 1) {
+            collisionBlocks.push(new CollisionBlock({ position: { x: 0, y: 0, }, }));
+        }
+    })
+})
+
 const player = new Player();
 
 let lastTime = 0;
