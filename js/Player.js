@@ -1,46 +1,76 @@
-import { gravity } from './config.js';
-export class Player {
-    constructor() {
-        this.position = {
-            x: 100,
-            y: 100
-        }
-        this.box = {
-            width: 50,
-            height: 50
-        }
+import * as config from './config.js';
+import { CheckCollision } from './Utils.js';
+import { Sprite } from './Sprite.js';
+export class Player extends Sprite {
+    constructor({ collisionBlocks, position }) {
+        const imageSrc = './img/warrior/Idle.png';
+        const frameBuffer = 5;
+        const frameRate = 8;
+        super({ imageSrc, frameRate, frameBuffer });
+        this.collisionBlocks = collisionBlocks
+        this.position = position
         this.velocity = {
             x: 0,
             y: 0
         }
-        this.speed = 10;
+        this.speed = config.playerSpeed;
+        this.updateHitbox();
     }
-    render(ctx) {
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.position.x, this.position.y, this.box.width, this.box.height);
-    }
-    update({ keys, ctx }) {
-        this.render(ctx);
-        this.velocity.y += gravity;
+    update({ ctx }) {
+        this.updateFrames();
+        this.updateHitbox();
+        ctx.fillStyle = `rgba(0,0,255,0.5)`;
+        ctx.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height);
+        this.draw({ ctx });
         this.position.x += this.velocity.x;
+        this.checkForHorizontalCollision();
+        this.applyGravity();
+        this.checkForVerticalCollision();
+    }
+    updateHitbox() {
+        this.hitbox = {
+            position: {
+                x: this.position.x + 70,
+                y: this.position.y + 50
+            },
+            height: 55,
+            width: 25
+        }
+    }
+    checkForHorizontalCollision() {
+        for (let i = 0; i < this.collisionBlocks.length; i++) {
+            const collisionBlock = this.collisionBlocks[i];
+            if (CheckCollision({ obj1: this, obj2: collisionBlock })) {
+                if (this.velocity.x > 0) {
+                    this.velocity.x = 0;
+                    this.position.x = collisionBlock.position.x - this.width - config.collisionBuffer;
+                    break;
+                }
+                if (this.velocity.x < 0) {
+                    this.velocity.x = 0;
+                    this.position.x = collisionBlock.position.x + collisionBlock.width + config.collisionBuffer;
+                }
+            }
+        }
+    }
+    applyGravity() {
         this.position.y += this.velocity.y;
-        this.velocity.x *= 0.95;
-        if (this.position.y + this.box.height > ctx.canvas.height) {
-            this.position.y = ctx.canvas.height - this.box.height;
-            this.velocity.y = 0;
-        }
-
-        this.velocity.x = 0;
-        if (keys.w.pressed && this.velocity.y === 0) {
-            this.velocity.y -= this.speed;
-        }
-        if (keys.a.pressed) {
-            this.velocity.x = -this.speed;
-        } else if (keys.d.pressed) {
-            this.velocity.x = this.speed;
-        }
-        for (let i in keys) {
-            keys[i].released = false;
+        this.velocity.y += config.gravity;
+    }
+    checkForVerticalCollision() {
+        for (let i = 0; i < this.collisionBlocks.length; i++) {
+            const collisionBlock = this.collisionBlocks[i];
+            if (CheckCollision({ obj1: this, obj2: collisionBlock })) {
+                if (this.velocity.y > 0) {
+                    this.velocity.y = 0;
+                    this.position.y = collisionBlock.position.y - this.height - config.collisionBuffer;
+                    break;
+                }
+                if (this.velocity.y < 0) {
+                    this.velocity.y = 0;
+                    this.position.y = collisionBlock.position.y + collisionBlock.height + config.collisionBuffer;
+                }
+            }
         }
     }
 }
