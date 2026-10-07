@@ -4,7 +4,6 @@ canvas.width = 1024;
 canvas.height = 576;
 canvas.style.width = '90%';
 
-
 let lastTime = 0;
 function animate(deltaTime) {
     window.requestAnimationFrame(animate);
